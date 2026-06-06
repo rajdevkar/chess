@@ -16,6 +16,7 @@ type Props = {
 
 export function TournamentCard({ tournament, className }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isResultsModalOpen, setIsResultsModalOpen] = useState(false);
 
   const isCompleted = tournament.status === 'completed';
   const isInProgress = tournament.status === 'live';
@@ -23,7 +24,11 @@ export function TournamentCard({ tournament, className }: Props) {
 
 
   const handleJoinClick = () => {
-    if (isCompleted || isInProgress) return;
+    if (isInProgress) return;
+    if (isCompleted) {
+      setIsResultsModalOpen(true);
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -56,14 +61,14 @@ export function TournamentCard({ tournament, className }: Props) {
           </div>
 
           <Button
-            variant={isUpcoming && tournament.playersJoined < tournament.maxPlayers ? "primary" : "secondary"}
+            variant={(isUpcoming && tournament.playersJoined < tournament.maxPlayers) || isCompleted ? "primary" : "secondary"}
             aria-label={`${isCompleted ? 'View' : 'Join'} ${tournament.name}`}
-            disabled={(isUpcoming && tournament.playersJoined >= tournament.maxPlayers) || isCompleted || isInProgress}
+            disabled={isUpcoming && tournament.playersJoined >= tournament.maxPlayers}
             onClick={handleJoinClick}
             rightIcon={
               <ArrowRightIcon className={clsx(
                 "w-4 h-4 ml-2 opacity-70 transition-transform",
-                isUpcoming && tournament.playersJoined < tournament.maxPlayers ? "group-hover:translate-x-1 text-white" : "text-brand"
+                (isUpcoming && tournament.playersJoined < tournament.maxPlayers) || isCompleted ? "group-hover:translate-x-1 text-white" : "text-brand"
               )} aria-hidden="true" />
             }
           >
@@ -133,6 +138,76 @@ export function TournamentCard({ tournament, className }: Props) {
                 }}
               >
                 Confirm Registration
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isResultsModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsResultsModalOpen(false)}
+          />
+
+          <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 border border-slate-200 transform transition-all z-10">
+            <div className="mb-6">
+              <div className="w-full flex flex-row items-center justify-between mb-2">
+                <h3 className="text-xl font-bold text-slate-900">
+                  Final Standings
+                </h3>
+
+                <button
+                  type="button"
+                  onClick={() => setIsResultsModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer transition-colors duration-75 ease-in-out"
+                  aria-label="Close modal"
+                >
+                  <XMarkIcon className="h-5 w-5" />
+                </button>
+              </div>
+              <p className="text-sm text-slate-500">
+                The <span className="font-semibold text-slate-800">{tournament.name}</span> has concluded.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 rounded-lg p-4 mb-6 border border-slate-200 text-sm flex flex-col gap-3 divide-y divide-slate-200/60">
+              <div className="flex items-center gap-2 not-last:pb-4">
+                <span className="text-amber-500 text-base" aria-hidden="true">🥇</span>
+                <span className="font-medium text-slate-800">First Winner Name</span>
+              </div>
+              <div className="flex items-center gap-2 not-last:pb-4">
+                <span className="text-amber-500 text-base" aria-hidden="true">🥈</span>
+                <span className="font-medium text-slate-800">Second Winner Name</span>
+              </div>
+              <div className="flex items-center gap-2 not-last:pb-4">
+                <span className="text-amber-500 text-base" aria-hidden="true">🥉</span>
+                <span className="font-medium text-slate-800">Third Winner Name</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
+              <Button
+                variant="secondary"
+                aria-label="Close modal"
+                onClick={() => setIsResultsModalOpen(false)}
+              >
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                aria-label="View Full Leaderboard"
+                onClick={() => {
+                  alert(`Navigating to full leaderboard...`);
+                  setIsResultsModalOpen(false);
+                }}
+              >
+                Full Leaderboard
               </Button>
             </div>
           </div>

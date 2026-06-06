@@ -1,13 +1,14 @@
+import { TournamentStatuses } from "@/types/tournament";
 import clsx from "clsx";
 
-type Props = { status: string; className?: string }
+type Props = { status: TournamentStatuses; className?: string }
 
 const StatusBadge = ({ status, className }: Props) => {
   const getStatusStyles = () => {
-    switch (status.toLowerCase()) {
+    switch (status) {
       case 'upcoming':
         return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-      case 'in progress':
+      case 'live':
         return 'bg-amber-100 text-amber-800 border-amber-200 animate-pulse';
       case 'completed':
         return 'bg-slate-100 text-slate-600 border-slate-200';
