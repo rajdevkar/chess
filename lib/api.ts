@@ -1,7 +1,7 @@
 import { Tournament } from "@/types/tournament";
 
 export async function getTournaments(query: string, statusFilter: string) {
-  const res = await fetch('http://localhost:3000/api/tournaments', {
+  const res = await fetch(process.env.API_URL + '/api/tournaments', {
     cache: 'no-store'
   });
 
