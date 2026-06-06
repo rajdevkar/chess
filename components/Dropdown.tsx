@@ -49,7 +49,7 @@ export default function Dropdown({
     <div className={clsx("relative inline-block text-left", className)} ref={dropdownRef}>
       <button
         type="button"
-        className="inline-flex justify-between items-center w-full max-w-sm rounded-md border border-slate-300 px-4 py-2 bg-white font-medium text-slate-700 hover:bg-slate-50 focus:outline-none"
+        className="inline-flex justify-between items-center w-full max-w-sm rounded-md border border-slate-200 px-4 py-2 bg-white font-medium text-slate-700 hover:bg-slate-50 focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
       >
         {displayLabel}

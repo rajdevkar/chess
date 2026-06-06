@@ -5,6 +5,7 @@ import { ArrowRightIcon, CalendarIcon, UsersIcon, XMarkIcon } from '@heroicons/r
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { useState } from 'react';
+import Button from './Button';
 import StatusBadge from './StatusBadge';
 import TimeControlIcon from './TimeControlIcon';
 
@@ -22,7 +23,7 @@ export function TournamentCard({ tournament, className }: Props) {
 
 
   const handleJoinClick = () => {
-    if (isCompleted) return;
+    if (isCompleted || isInProgress) return;
     setIsModalOpen(true);
   };
 
@@ -54,22 +55,20 @@ export function TournamentCard({ tournament, className }: Props) {
             </div>
           </div>
 
-          <button
-            className={clsx(
-              "w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm focus:outline-none",
-              isUpcoming
-                ? 'cursor-not-allowed bg-slate-900 text-white hover:bg-slate-800'
-                : isInProgress
-                  ? 'bg-brand text-white hover:bg-brand-hover'
-                  : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50'
-            )}
+          <Button
+            variant={isUpcoming && tournament.playersJoined < tournament.maxPlayers ? "primary" : "secondary"}
             aria-label={`${isCompleted ? 'View' : 'Join'} ${tournament.name}`}
-            disabled={isUpcoming}
+            disabled={(isUpcoming && tournament.playersJoined >= tournament.maxPlayers) || isCompleted || isInProgress}
             onClick={handleJoinClick}
+            rightIcon={
+              <ArrowRightIcon className={clsx(
+                "w-4 h-4 ml-2 opacity-70 transition-transform",
+                isUpcoming && tournament.playersJoined < tournament.maxPlayers ? "group-hover:translate-x-1 text-white" : "text-brand"
+              )} aria-hidden="true" />
+            }
           >
             {isCompleted ? 'View Results' : 'Join Arena'}
-            <ArrowRightIcon className={clsx("w-4 h-4 ml-2 opacity-70 transition-transform", !isUpcoming ? "group-hover:translate-x-1" : "")} aria-hidden="true" />
-          </button>
+          </Button>
         </div>
       </li>
 
@@ -85,26 +84,28 @@ export function TournamentCard({ tournament, className }: Props) {
           />
 
           <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 border border-slate-200 transform transition-all z-10">
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 rounded-lg p-1 focus:outline-none"
-              aria-label="Close modal"
-            >
-              <XMarkIcon className="h-5 w-5" />
-            </button>
-
             <div className="mb-6">
-              <h3 className="text-xl font-bold text-slate-900 mb-2">
-                Join Tournament?
-              </h3>
+              <div className="w-full flex flex-row items-center justify-between mb-2">
+                <h3 className="text-xl font-bold text-slate-900">
+                  Join Tournament?
+                </h3>
+
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer transition-colors duration-75 ease-in-out"
+                  aria-label="Close modal"
+                >
+                  <XMarkIcon className="h-5 w-5" />
+                </button>
+              </div>
               <p className="text-sm text-slate-500">
                 You are about to register for <span className="font-semibold text-slate-800">{tournament.name}</span>.
                 Please confirm your entry below.
               </p>
             </div>
 
-            <div className="bg-slate-50 rounded-lg p-4 mb-6 border border-slate-100 text-sm space-y-2">
+            <div className="bg-slate-50 rounded-lg p-4 mb-6 border border-slate-200 text-sm space-y-2">
               <div className="flex justify-between">
                 <span className="text-slate-500">Time Control:</span>
                 <span className="font-medium text-slate-800">{tournament.timeControl}</span>
@@ -116,23 +117,23 @@ export function TournamentCard({ tournament, className }: Props) {
             </div>
 
             <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                aria-label="Close modal"
                 onClick={() => setIsModalOpen(false)}
-                className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none"
               >
                 Cancel
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="primary"
+                aria-label="Join Tournament"
                 onClick={() => {
                   alert(`Successfully joined ${tournament.name}!`);
                   setIsModalOpen(false);
                 }}
-                className="w-full sm:w-auto px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
               >
                 Confirm Registration
-              </button>
+              </Button>
             </div>
           </div>
         </div>

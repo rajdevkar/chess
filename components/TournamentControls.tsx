@@ -54,7 +54,7 @@ export default function TournamentControls({className}: Props) {
         <input
           type="text"
           placeholder="Search tournaments..."
-          className="w-full border border-slate-300 rounded-md px-4 py-2 focus:outline-none"
+          className="w-full border border-slate-200 rounded-md px-4 py-2 focus:outline-none"
           defaultValue={searchParams.get("q")?.toString()}
           onChange={(e) => handleSearch(e.target.value)}
         />
